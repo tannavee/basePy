@@ -1,5 +1,1 @@
-taatcccatcgcctgaataggccgactttccatatataaccggccgaggcataagggaac
-ccggcc  aataagccacttacgagcgtgtcgctaaattggactt   tacaagaaaacatctcg
-gaatacatatcctggac    tatcaacattattcggtcactgccggcccaacatgctcgctac
-catcatgttccaagaggtgaccaccccctcgctcgtggctccagctttgtgttatacaga
-gagaccggggttagtc  ggtcgtctacccgcatatttaacga   ataagaggcctggaatact
+atg		tea
