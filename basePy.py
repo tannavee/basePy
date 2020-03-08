@@ -1,4 +1,4 @@
-def make_DNAcompSeq(dnaSeqList):
+def dna_compSeqMaker(dnaSeqList):
     three_to_fivecompSeqList = []
     dnaChecker = True
     for nucleotide in dnaSeqList:
@@ -26,9 +26,8 @@ def make_DNAcompSeq(dnaSeqList):
             else:
                 three_to_fivecompSeqList.append('c')
         else:
-            if nucleotide.casefold() != "a" or "t"or "c" or "g":
-                dnaChecker = False
-                break           
+            dnaChecker = False
+            break           
     compSeqList = three_to_fivecompSeqList[::-1]
     if dnaChecker == True: 
         return compSeqList
@@ -42,11 +41,9 @@ def dna_startCodonFinder(seqList, positionToStart):
     thirdStart = False
     while counter <= len(seqList)-1 and firstStart is False and secondStart is False and thirdStart is False:
         if counter + 2 <= len(seqList)-1 and seqList[counter].casefold() == 'a' and seqList[counter + 1].casefold() == 't' and seqList[counter + 2].casefold() == 'g':
-            # print("found at", counter, 'and', counter + 1, 'and', counter + 2)
             firstStart, secondStart, thirdStart = True, True, True 
         else: 
-            counter += 1
-            #if counter > len(sequenceList) - 1:       
+            counter += 1      
     if thirdStart == True:
         return counter + 2
     else:
@@ -90,37 +87,56 @@ def dna_wholeSeqOrfFinder(dnaSeqList):
             if len(orfsInSeq) == 0:
                 return orf
             else:
-                return orfsInSeq
-    return orfsInSeq
-    
-    
-def dna_orfPrinter(dnaSeqList):
-    orfDict = dna_wholeSeqOrfFinder(dnaSeqList)
-    if type(orfDict) != dict:
-        return orfDict 
+                break
+    if len(orfsInSeq) > 1:
+        orderedOrfs = {j: i for j, i in sorted(orfsInSeq.items(), key=lambda item: abs(item[1][0]-item[1][1]), reverse=True)}
+        return orderedOrfs
     else:
-        if len(orfDict) == 1:
-            printStatement = 'There is only one open reading frame in this sequence which spans from base ' + str(orfDict['ORF 1'][0]) + ' to ' + str(orfDict['ORF 1'][1]) + ' making it ' + str(orfDict['ORF 1'][1] - orfDict['ORF 1'][0]) + ' bases long'
+        return orfsInSeq
+    
+    
+def dna_orfPrinter(orfOutput):
+    if type(orfOutput) != dict:
+        return orfOutput 
+    else:
+        if len(orfOutput) == 1:
+            printStatement = 'There is only one open reading frame in this sequence which spans from base ' + str(orfOutput['ORF 1'][0]) + ' to ' + str(orfOutput['ORF 1'][1]) + ' making it ' + str(orfOutput['ORF 1'][1] - orfOutput['ORF 1'][0]) + ' bases long'
             return printStatement
         else:
-            orderedOrfs = {j: i for j, i in sorted(orfDict.items(), key=lambda item: abs(item[1][0]-item[1][1]), reverse=True)}
-            printStatement = 'The following open reading frames in the sequence are ordered from greatest to least in size: ' '\n'
-            for key, (start, stop) in orderedOrfs.items():
+            printStatement = 'The following ' + str(len(orfOutput)) + ' open reading frames in the sequence are ordered from greatest to least in size: ' '\n'
+            for key, (start, stop) in orfOutput.items():
                 printStatement += '{}: {} bases long, spanning from bases {} to {}\n'.format(key, stop-start, start, stop)
             return printStatement
+    
+
+def rna_codingToMRNA(dnaSeqList):
+    mrnaList = []
+    rnaChecker = True
+    for nucleotide in dnaSeqList:
+        if nucleotide.casefold() in  ("a", "c", "g"):
+            mrnaList.append(nucleotide) 
+        elif nucleotide.casefold() == 't':
+            if nucleotide.isupper():
+                mrnaList.append('U')
+            else:
+                mrnaList.append('u') 
+        else:
+            if nucleotide.casefold() not in  ("a", "t", "c", "g"):
+                rnaChecker = False
+                break              
+    if rnaChecker == True: 
+        return mrnaList
+    else: 
+        return "Warning: This is not a DNA sequence."    
+
 
     
 
-    
-
-
-    
 
 
 
 
-
-#allOrfs = dna_wholeSeqOrfFinder(a)
+# tests cases
 
 noStart = ['c', 'a', 't', 'c', 'a', 't', 'c', 'a', 't', 'c', 'a', 't', 'c', 'a', 't', 'c', 'a', 't', 'c', 'a', 't']
 noStop = ['c', 'a', 'a', 't', 'g', 'c', 'a', 'a',  'c', 'a', 'a',  'c', 'a', 'a',  'c', 'a', 'a',  'c', 'a', 'a',  'c', 'a', 'a']
@@ -133,16 +149,5 @@ oneOrfwithStarts = ['a', 't', 'g', 'a', 't', 'g', 'a', 't', 'g', 't', 'a', 'a']
 manyStartNextStop = ['a', 't', 'g', 't', 'a', 'a', 'a', 't', 'g', 't', 'a', 'a']
 manyStartNextStopwithFiller = ['a', 't', 'a', 't', 'g', 't', 'a', 'a', 'a', 't', 'a', 't', 'a', 't', 'g', 't', 'a', 'a']
 
-
-
-
-
-
-
-
-
-    
-
-        
         
         
