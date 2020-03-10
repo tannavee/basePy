@@ -54,12 +54,15 @@ def dna2protein(seqFile):
         else:
             return "Results for the given sequence: " + orfsInGivenSeq, "Results for the complementary sequence: " + orfsInCompSeq
     
+    # replacing the 't' with 'u' in the coding strand
     rnaStrandList = bp.rna_codingToMRNA(codingStrandList)    
     
+    # creating new dictionary where each mRNA key will have the whole sequence
     mRNAseqDict = {}
     for key, value in mRNApositions.items():
         mRNAseqDict[key] = rnaStrandList[mRNApositions[key][0]:mRNApositions[key][1] + 1]
     
+    # converting the codons to amino acid
     proteinSeqDict = {}
     for key, value in mRNAseqDict.items():
         proteinSeqDict[key.replace("mRNA", "Protein")] = bp.mRNA_rnaToAminoAcidSeq(mRNAseqDict[key])
