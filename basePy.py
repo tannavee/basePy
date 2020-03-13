@@ -88,7 +88,7 @@ def dna_wholeSeqOrfFinder(dnaSeqList):
             # new position to start is the base after the stop codon of the previous orf
             positionToStart = orf[1] + 1
         else:
-            # is no orfs are found, will return error msg "either no stop" or "no stop"
+            # is no orfs are found, will return error msg either "no start" or "no stop"
             if len(orfsInSeq) == 0:
                 return orf
             else:
