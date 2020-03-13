@@ -1,5 +1,8 @@
+# function that takes in a DNA sequence list with differenent cases, and returns a list where all the nucleotides are uppercase.
+# this is so that the case is compatiable when converting codons to amino acids, since references are uppercase.
 def base_Capitalizer(seqList):
     uppercaseSeqList = []
+    # creating a dnachecker in cases there are bases that are not a,g, c, t. Program will return a warning if this is the case
     dnaChecker = True
     for nucleotide in seqList:
         if nucleotide.casefold() in ('a', 'c', 'g', 't'):
@@ -12,7 +15,9 @@ def base_Capitalizer(seqList):
         return "Warning: This is not a DNA sequence."
     return seqList
 
+# function that makes the complementary sequence. If the program finds a nucleotide will append the corresponding nucleotide.
 def dna_compSeqMaker(dnaSeqList):
+    # the complementary list created startes off as 3' -> 5'
     three_to_fivecompSeqList = []
     for nucleotide in dnaSeqList:
         if nucleotide.casefold() == 't':
@@ -23,15 +28,15 @@ def dna_compSeqMaker(dnaSeqList):
                 
         elif nucleotide.casefold() == 'c':
             three_to_fivecompSeqList.append('G')
-           
-        elif nucleotide.casefold() == 'g':
-            three_to_fivecompSeqList.append('C')
+            
         else:
-            dnaChecker = False
-            break           
+             if nucleotide.casefold() == 'g':
+                 three_to_fivecompSeqList.append('C')
+    # reversing the list to get in 5' -> 3' direction.
     compSeqList = three_to_fivecompSeqList[::-1]
     return compSeqList
         
+# function that finds "A", "T", "G", and returns the index of the third base of the start sequence. If non found, will return error message    
 def dna_startCodonFinder(seqList, positionToStart):
     counter = positionToStart
     found = False
@@ -45,11 +50,14 @@ def dna_startCodonFinder(seqList, positionToStart):
     else:
         return "No start codon was found"
 
+# function that finds orf
 def dna_orfFinder(dnaSeqList, positionToStart):
+    # gets output of the above function, and checks if start was found or error
     thirdStartBase_position = dna_startCodonFinder(dnaSeqList, positionToStart)
     if type(thirdStartBase_position) == str:
         return thirdStartBase_position
     else: 
+        # if start found, will add 1, and check every three codons for stop
         counter = thirdStartBase_position + 1 
         found = False
         while counter <= len(dnaSeqList)-1 and found is False:
@@ -58,10 +66,13 @@ def dna_orfFinder(dnaSeqList, positionToStart):
             else:
                 counter += 3
         if found == True:
+            # if found, will return a 2 element list, where first element is index of first start base, and 2nd is index of 3rd stop base
             return [thirdStartBase_position - 2, counter + 2]
         else:
+            # error message if none found
             return "No stop codon was found"
 
+# function that uses above function in a loop to find all ORFS
 def dna_wholeSeqOrfFinder(dnaSeqList):
     positionToStart = 0
     orfsInSeq = {}
