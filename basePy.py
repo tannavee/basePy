@@ -36,7 +36,7 @@ def dna_compSeqMaker(dnaSeqList):
     compSeqList = three_to_fivecompSeqList[::-1]
     return compSeqList
         
-# function that finds "A", "T", "G", and returns the index of the third base of the start sequence. If non found, will return error message    
+# function that finds "A", "T", "G", and returns the index of the third base of the start sequence. If none found, will return error message    
 def dna_startCodonFinder(seqList, positionToStart):
     counter = positionToStart
     found = False
@@ -72,8 +72,9 @@ def dna_orfFinder(dnaSeqList, positionToStart):
             # error message if none found
             return "No stop codon was found"
 
-# function that uses above function in a loop to find all ORFS
+# function that uses above function in a loop to find all ORFS and add them to a dictionary with the start and stop position.
 def dna_wholeSeqOrfFinder(dnaSeqList):
+    # will start at the first index of the sequence list
     positionToStart = 0
     orfsInSeq = {}
     orfLabel = 'ORF '
@@ -82,20 +83,24 @@ def dna_wholeSeqOrfFinder(dnaSeqList):
         orf = dna_orfFinder(dnaSeqList, positionToStart)
         if type(orf) == list:
             orfCounter += 1
+            # adding orf to dictionary
             orfsInSeq[orfLabel + str(orfCounter)] = orf
+            # new position to start is the base after the stop codon of the previous orf
             positionToStart = orf[1] + 1
         else:
+            # is no orfs are found, will return error msg "either no stop" or "no stop"
             if len(orfsInSeq) == 0:
                 return orf
             else:
                 break
     if len(orfsInSeq) > 1:
+        # ordering the orfs by size, and placing largest first
         orderedOrfs = {j: i for j, i in sorted(orfsInSeq.items(), key=lambda item: abs(item[1][0]-item[1][1]), reverse=True)}
         return orderedOrfs
     else:
         return orfsInSeq
     
-    
+# printing out information in dcionary of ordered orfs    
 def dna_orfPrinter(orfOutputDict):
     if type(orfOutputDict) != dict:
         return orfOutputDict 
@@ -108,7 +113,8 @@ def dna_orfPrinter(orfOutputDict):
             for key, (start, stop) in orfOutputDict.items():
                 printStatement += '{}: {} bases long, spanning from bases {} to {}\n'.format(key, stop-start + 1, start, stop)
             return printStatement
-    
+   
+# coonverting dna seq to rna seq
 def rna_codingToMRNA(dnaSeqList):
     mrnaList = []
     rnaChecker = True
@@ -126,6 +132,7 @@ def rna_codingToMRNA(dnaSeqList):
     else: 
         return "Warning: This is not a DNA sequence." 
 
+# finds certain codons and replace it with Amino Acid one letter code corresponding to codon
 def mRNA_rnaToAminoAcidSeq(list):
     counter = 0
     aminoAcidList = []
@@ -201,6 +208,7 @@ def mRNA_rnaToAminoAcidSeq(list):
             counter += 3
     return aminoAcidList     
 
+# prints results of protein dictionary
 def protein_printer(proteinOutputDict):
     if type(proteinOutputDict) != dict:
         return 'Warning: This is not the proper input.'
